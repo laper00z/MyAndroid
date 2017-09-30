@@ -17,6 +17,7 @@ public class Enemy {
     private int x;
     private int y;
     private int life;
+    private int time = 0;
     private Bitmap bitmap;
     private Context mContext;
 
@@ -25,10 +26,20 @@ public class Enemy {
         this.type = type;
         this.x = x;
         this.y = y;
-        this.life = type*300;
-        bitmap = BitmapFactory.decodeResource(
-                context.getResources(),
-                R.drawable.enemy3);
+        if(type == 1){
+            this.speed = 20;
+            this.life = type*3000;
+            bitmap = BitmapFactory.decodeResource(
+                    context.getResources(),
+                    R.drawable.enemy3);
+        }
+        else if(type == 2){
+            this.speed = 20;
+            this.life = type*300;
+            bitmap = BitmapFactory.decodeResource(
+                    context.getResources(),
+                    R.drawable.enemy4);
+        }
     }
 
     public void draw(Canvas canvas, Paint paint){
@@ -55,8 +66,33 @@ public class Enemy {
         return y;
     }
 
-    public void logic(int x,int y){
-        this.y+=20;
+    public int getType(){
+        return type;
+    }
+
+    private int temp = 0;
+    public void logic(){
+        time++;
+        if(type == 1){
+            if(temp == 0)
+                this.x-=speed;
+            else
+                this.x+=speed;
+            if(this.x<=0||(this.x>=540&&this.x<=680))
+                temp = 1;
+            if((this.x>=400&&this.x<540)||this.x>=1080)
+                temp = 0;
+            this.y+=speed;
+        }
+        else if(type==2){
+            ;
+        }
+    }
+
+    public boolean isTimeEnough(){
+        if(time%10==0)
+            return true;
+        return false;
     }
 
     public boolean isConnectionWithItem(Bitmap iBitmap,int ItemX,int ItemY){

@@ -56,36 +56,47 @@ public class GameLogic {
         //背景移动
         backGround.logic();
 
-        hero.logic(0,0);
+        //hero.logic(0,0);
 
         //自机子弹生成
-        if(count%5==0)
-            addBullet();
+        if((hero.getType()==1&&count%5==0)||(hero.getType()==2&&count%10==0))
+            addBullet(hero.getType());
 
-        //自机子弹
+        //自机子弹碰撞测试（与敌机）
         for (int i = 0; i < allBullets.size(); i++) {
             Bullet bullet = allBullets.get(i);
-
-            //自机子弹移动
-            bullet.logic(0,0);
-
-            //自机子弹碰撞测试（与敌机）
-            for(int j = 0; j< allEnemys.size(); j++){
+            for (int j = 0; j < allEnemys.size(); j++) {
                 Enemy enemy = allEnemys.get(j);
-                if(enemy.isConnectionWithItem(bullet.getBitmap(),bullet.getX(),bullet.getY())==true){
+                if (enemy.isConnectionWithItem(bullet.getBitmap(), bullet.getX(), bullet.getY()) == true) {
 
                     //自机子弹消除（碰撞敌机消除）
                     allBullets.remove(i);
+                    i--;
+                    //敌机闪烁，表示被击中
 
                     //敌机消除，计分
-                    if(enemy.minusLife(hero.getPower()))
+                    if (enemy.minusLife(hero.getPower()))
                         allEnemys.remove(j);
-
+                    break;
                 }
             }
+        }
 
+        //自机子弹移动
+        for (int i = 0; i < allBullets.size(); i++) {
+            Bullet bullet = allBullets.get(i);
+            if(allEnemys.size()==0)
+                bullet.logic(0,0,null,0);
+            else {
+                Enemy enemy = allEnemys.get(0);
+                bullet.logic(enemy.getX(), enemy.getY(),enemy.getBitmap(),1);
+            }
+        }
+
+        for(int i = 0;i<allBullets.size();i++) {
+            Bullet bullet = allBullets.get(i);
             // 自机子弹出界消除
-            if(bullet.isDead())
+            if (bullet.isDead())
                 allBullets.remove(i);
         }
 
@@ -94,40 +105,67 @@ public class GameLogic {
             addEnemy(count/40);
         }
 
-        // 敌机
+        // 敌机移动
         for(int i = 0;i < allEnemys.size();i++){
-            // 敌机移动
             Enemy enemy = allEnemys.get(i);
-            enemy.logic(0,0);
+            enemy.logic();
+        }
 
-            // 敌机碰撞测试（与自机，不是与自机子弹）
+        // 敌机碰撞测试（与自机，不是与自机子弹）
+        for(int i = 0;i < allEnemys.size();i++){
+            Enemy enemy = allEnemys.get(i);
             if(hero.isConnectionWithItem(enemy.getBitmap(),enemy.getX(),enemy.getY())){
                 // 自机消除，生命减少，游戏结束判断
                 hero.minusLife();
             }
-            // 敌机出界消除
+        }
+        // 敌机出界消除
+        for(int i = 0;i < allEnemys.size();i++){
+            Enemy enemy = allEnemys.get(i);
             if(enemy.isDead()){
                 allEnemys.remove(i);
             }
         }
 
-
-
         // 敌机子弹生成
+        for(int i = 0;i < allEnemys.size();i++){
+            Enemy enemy = allEnemys.get(i);
+            if(enemy.isTimeEnough()){
+                addAmmo(enemy);
+            }
+        }
+
         // 敌机子弹移动
+        for(int i = 0;i < allAmmos.size();i++) {
+            Ammo ammo = allAmmos.get(i);
+            ammo.logic();
+        }
+
         // 敌机子弹碰撞测试（与自机）
-        // 自机消除，生命减少，游戏结束判断
+        for(int i = 0;i < allAmmos.size();i++) {
+            Ammo ammo = allAmmos.get(i);
+            if(hero.isConnectionWithItem(ammo.getBitmap(),ammo.getX(),ammo.getY())){
+                // 自机消除，生命减少，游戏结束判断
+            }
+        }
+
         // 敌机子弹出界消除
+        for(int i = 0;i < allAmmos.size();i++) {
+            Ammo ammo = allAmmos.get(i);
+            if(ammo.isDead())
+                allAmmos.remove(i);
+        }
         count++;
     }
 
-    private void addBullet(){
-        int x = hero.getX() + hero.getBitmap().getWidth() / 2;
+    private void addBullet(int type){
+        int x = hero.getX() + hero.getBitmap().getWidth() / 2 - 50;
         int y = hero.getY();
 
-        Bullet bullet = new Bullet(getContext(),1,x,y,hero.getPower());
-
-        allBullets.add(bullet);
+        Bullet bullet1 = new Bullet(getContext(),type,x-50,y,hero.getPower());
+        Bullet bullet2 = new Bullet(getContext(),type,x+50,y,hero.getPower());
+        allBullets.add(bullet1);
+        allBullets.add(bullet2);
     }
 
     private void addEnemy(int count){
@@ -140,13 +178,19 @@ public class GameLogic {
     private void addAmmo(Enemy enemy){
         int x = enemy.getX();
         int y = enemy.getY();
-
-        Ammo ammo = new Ammo(getContext(),1,40,x,y,hero.getX(),hero.getY());
-
-        allAmmos.add(ammo);
+        if(enemy.getType()==1){
+           ;
+        }else if(enemy.getType()==2){
+            Ammo ammo = new Ammo(getContext(),2,0,20,x,y,hero.getX(),hero.getY());
+            allAmmos.add(ammo);
+        }
     }
 
-    public void onTouchEvent(MotionEvent event1, MotionEvent event2) {
-
+    public void onTouchEvent(MotionEvent event) {
+        //if(hero.life<=0){
+        //    hero.againButtonClick(getContext(),
+        //            event);
+        //}
+        hero.logic((int) event.getX(), (int) event.getY());
     }
 }

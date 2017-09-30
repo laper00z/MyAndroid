@@ -14,7 +14,6 @@ import android.graphics.Paint;
 
 public class Hero {
     private int type;
-    private int speed;
     private int life = 1;
     private int grade;
     private int power;
@@ -29,11 +28,10 @@ public class Hero {
         this.life = life;
         this.bitmap = BitmapFactory.decodeResource(
                 context.getResources(),
-                R.drawable.hero1);
+                R.drawable.hero2);
         this.x = 540 - bitmap.getWidth()/2;
         this.y = 1200;
-        this.power = 40*type;
-        this.speed = 10*(type+2);
+        this.power = 100;
         this.grade = 0;
     }
 
@@ -42,14 +40,8 @@ public class Hero {
     }
     int temp = 0;
     public void logic(int x,int y){
-        if(temp == 0)
-            this.x-=speed;
-        else
-            this.x+=speed;
-        if(this.x<=200)
-            temp = 1;
-        if(this.x>=800)
-            temp = 0;
+        this.x = x - bitmap.getWidth() / 2;
+        this.y = y - bitmap.getHeight() / 2;;
     }
 
     public int getX(){
@@ -66,6 +58,10 @@ public class Hero {
 
     public int getPower(){
         return power;
+    }
+
+    public int getType(){
+        return type;
     }
 
     public Bitmap getBitmap(){

@@ -66,9 +66,8 @@ public class DrawThread extends Thread {
 
     }
 
-    public void onTouchEvent(MotionEvent event1,MotionEvent event2) {
-        //滑动响应
-        logic.onTouchEvent(event1,event2);
+    public void onTouchEvent(MotionEvent event) {
+        logic.onTouchEvent(event);
     }
 
 }
