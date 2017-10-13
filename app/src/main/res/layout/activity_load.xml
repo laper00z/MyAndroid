@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#000000"
+    tools:context="com.example.lapersfacg.airplane.LoadActivity">
+
+    <ImageView
+        android:id="@+id/upjet"
+        android:layout_marginLeft="100dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="25dp"
+        android:src="@drawable/loadjet1"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="120dp"
+        android:layout_height="120dp" />
+    <LinearLayout
+        android:id="@+id/text"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true">
+        <TextView
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:background="@drawable/title_bg"
+            android:textColor="#ffffff"
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/danmuText"
+            android:shadowRadius="3"
+            android:shadowDx="5"
+            android:shadowDy="5"
+            android:shadowColor="#e6e300"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="弹幕游戏"
+            android:textSize="65sp" />
+        <TextView
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="--VER1.1"
+            android:textSize="25sp" />
+        <TextView
+            android:layout_marginTop="10dp"
+            android:id="@+id/underline"
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#ffffff"
+            />
+    </LinearLayout>
+    <ImageView
+        android:id="@+id/downjet"
+        android:layout_marginRight="100dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="25dp"
+        android:src="@drawable/loadjet2"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="120dp"
+        android:layout_height="120dp" />
+
+</RelativeLayout>
