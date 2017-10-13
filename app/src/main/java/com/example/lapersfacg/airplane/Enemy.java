@@ -21,6 +21,9 @@ public class Enemy {
     private Bitmap bitmap;
     private Context mContext;
 
+    private int left;
+    private int right;
+
     public Enemy(Context context,int type,int x,int y){
         mContext = context;
         this.type = type;
@@ -40,6 +43,8 @@ public class Enemy {
                     context.getResources(),
                     R.drawable.enemy4);
         }
+        left=0;
+        right=1;
     }
 
     public void draw(Canvas canvas, Paint paint){
@@ -73,6 +78,7 @@ public class Enemy {
     private int temp = 0;
     public void logic(){
         time++;
+        /*
         if(type == 1){
             if(temp == 0)
                 this.x-=speed;
@@ -86,11 +92,30 @@ public class Enemy {
         }
         else if(type==2){
             ;
+        }*/
+
+        if(right==0)
+        {
+            this.x+=speed;
+            if(this.x>1000)
+            {
+                right=1;
+            }
         }
+        else
+        {
+            this.x-=speed;
+            if(this.x<100)
+            {
+                right=0;
+            }
+        }
+
+
     }
 
     public boolean isTimeEnough(){
-        if(time%10==0)
+       if(time%10==0)
             return true;
         return false;
     }

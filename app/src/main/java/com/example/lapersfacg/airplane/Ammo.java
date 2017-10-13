@@ -19,13 +19,15 @@ public class Ammo {
     private double dir;
     private Bitmap bitmap;
     private Context mContext;
-
-    public Ammo(Context context, int type, double dir,int speed, int x, int y, int HeroX, int HeroY){
+    private int angle;//子弹运行角度
+    private boolean tag;
+    public Ammo(Context context, int type, double dir,int speed, int x, int y, int HeroX, int HeroY,Bitmap Dir,int angle){
         mContext = context;
         this.type = type;
         this.speed = speed;
         this.x = x;
         this.y = y;
+        this.angle=angle;
         if(type==2) {
             this.dir = (HeroY - y) / (HeroX - x);
             bitmap = BitmapFactory.decodeResource(
@@ -38,6 +40,9 @@ public class Ammo {
                     context.getResources(),
                     R.drawable.ammo2);
         }
+       this.x=x+Dir.getWidth()/2-bitmap.getWidth()/2;
+       this.y=y+Dir.getHeight()/2;
+       tag=true;
     }
 
     public void draw(Canvas canvas,Paint paint){
@@ -45,8 +50,39 @@ public class Ammo {
     }
 
     public void logic(){
-        x+=speed;
-        y+=speed*dir;
+
+        /*
+        圆形弹幕
+         */
+       // x+=speed;
+        //y+=speed*dir;
+        /*
+        x=(int)(x+(speed*Math.cos(angle*3.1415926/180)));
+        y=(int)(y+(speed*Math.sin(angle*3.1415926/180)));
+        */
+
+        /*
+       // 螺旋扩散弹幕
+        double t=(angle+120)*3.1415926/180;
+        if(tag)
+        {
+            x=(int)(x+(0.5*angle)*Math.cos(angle*3.1415926/180));
+            y=(int)(y+(0.5*angle)*Math.sin(angle*3.1415926/180));
+            tag=false;
+        }
+        x=(int)(x+(speed)*Math.cos(t));
+        y=(int)(y+(speed)*Math.sin(t));
+        */
+
+        //星形线
+        if(tag)
+        {
+            x=(int)(x+100*Math.pow(Math.cos(angle*3.1415926/180),3));
+            y=(int)(y+100*Math.pow(Math.sin(angle*3.1415926/180),3))+50;
+            tag=false;
+        }
+        y+=speed;
+
     }
 
     public boolean isDead(){

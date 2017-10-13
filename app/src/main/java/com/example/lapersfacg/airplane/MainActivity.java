@@ -7,16 +7,20 @@ import android.view.View;
 import android.media.MediaPlayer;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private MediaPlayer player;
     public static int life = 0;
+    public String name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(new GameView(this,1,2));
+        Intent intent=getIntent();
+        name=intent.getStringExtra("user_name");
         //setContentView(R.layout.activity_main);
 
         /**findViewById(R.id.start_Button).setOnClickListener(new View.OnClickListener() {
@@ -66,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        DataBaseOps.insert(name,3402,MainActivity.this);
         //player.stop();
         //player.release();
     }

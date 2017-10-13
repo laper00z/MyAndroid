@@ -15,6 +15,7 @@ public class GameLogic {
     private Context context;
     private BackGround backGround;
     private Paint paint;
+    private boolean flag;
     Hero hero;
     ArrayList<Enemy> allEnemys = new ArrayList<Enemy>();
     ArrayList<Ammo> allAmmos = new ArrayList<Ammo>();
@@ -29,6 +30,7 @@ public class GameLogic {
         backGround = new BackGround(context);
         paint = new Paint();
         hero = new Hero(context,life,type);
+        flag=true;
     }
 
     public void draw(Canvas canvas){
@@ -101,9 +103,10 @@ public class GameLogic {
         }
 
         // 敌机生成
-        if(count%400==0){
-            addEnemy(count/40);
-        }
+        if(count%100==0&&flag){
+           addEnemy(count/4);
+            flag=false;
+            }
 
         // 敌机移动
         for(int i = 0;i < allEnemys.size();i++){
@@ -131,7 +134,8 @@ public class GameLogic {
         for(int i = 0;i < allEnemys.size();i++){
             Enemy enemy = allEnemys.get(i);
             if(enemy.isTimeEnough()){
-                addAmmo(enemy);
+               // addAmmo(enemy);
+                produceCircle(enemy);
             }
         }
 
@@ -158,6 +162,20 @@ public class GameLogic {
         count++;
     }
 
+    private void produceCircle(Enemy enemy)
+    {
+
+        //产生环形弹幕
+        for(int i=0;i<36;i++)
+        {
+            addAmmo(enemy,10*i);
+        }
+
+    }
+
+
+
+
     private void addBullet(int type){
         int x = hero.getX() + hero.getBitmap().getWidth() / 2 - 50;
         int y = hero.getY();
@@ -170,20 +188,21 @@ public class GameLogic {
 
     private void addEnemy(int count){
         int x = 400;
-        int y = 0;
+        int y = 400;//修改过
         Enemy enemy = new Enemy(getContext(),1,x,y);
         allEnemys.add(enemy);
     }
 
-    private void addAmmo(Enemy enemy){
+    private void addAmmo(Enemy enemy,int angle){
         int x = enemy.getX();
         int y = enemy.getY();
-        if(enemy.getType()==1){
+        if(enemy.getType()==2){
            ;
-        }else if(enemy.getType()==2){
-            Ammo ammo = new Ammo(getContext(),2,0,20,x,y,hero.getX(),hero.getY());
+        }else if(enemy.getType()==1){
+            Ammo ammo = new Ammo(getContext(),2,0,20,x,y,hero.getX(),hero.getY(),enemy.getBitmap(),angle);
             allAmmos.add(ammo);
         }
+
     }
 
     public void onTouchEvent(MotionEvent event) {
