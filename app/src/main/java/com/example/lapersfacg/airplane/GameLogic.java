@@ -125,7 +125,7 @@ public class GameLogic {
                 hero.minusLife();
             }
         }
-        // 敌机出界消除
+        // 敌机出界消
         for(int i = 0;i < allEnemys.size();i++){
             Enemy enemy = allEnemys.get(i);
             if(enemy.isDead()){
