@@ -16,6 +16,8 @@ public class GameLogic {
     private BackGround backGround;
     private Paint paint;
     private boolean flag;
+    private boolean isPressed;
+
     Hero hero;
     ArrayList<Enemy> allEnemys = new ArrayList<Enemy>();
     ArrayList<Ammo> allAmmos = new ArrayList<Ammo>();
@@ -31,6 +33,7 @@ public class GameLogic {
         paint = new Paint();
         hero = new Hero(context,life,type);
         flag=true;
+        isPressed=false;
     }
 
     public void draw(Canvas canvas){
@@ -133,10 +136,13 @@ public class GameLogic {
         // 敌机子弹生成
         for(int i = 0;i < allEnemys.size();i++){
             Enemy enemy = allEnemys.get(i);
-            if(enemy.isTimeEnough()){
-               // addAmmo(enemy);
+            if(enemy.isTime1())
                 produceCircle(enemy);
-            }
+            if(enemy.isTime2())
+                addAmmo(enemy, 2, 0, 60, 0);
+            if(enemy.isTime3())
+                addAmmo(enemy, 2, 0, -60, 0);
+
         }
 
         // 敌机子弹移动
@@ -164,17 +170,12 @@ public class GameLogic {
 
     private void produceCircle(Enemy enemy)
     {
-
         //产生环形弹幕
         for(int i=0;i<36;i++)
         {
-            addAmmo(enemy,10*i);
+            addAmmo(enemy,1 ,10*i,0,0);
         }
-
     }
-
-
-
 
     private void addBullet(int type){
         int x = hero.getX() + hero.getBitmap().getWidth() / 2 - 50;
@@ -188,20 +189,18 @@ public class GameLogic {
 
     private void addEnemy(int count){
         int x = 400;
-        int y = 400;//修改过
-        Enemy enemy = new Enemy(getContext(),1,x,y);
+        int y = 0;//修改过
+        Enemy enemy = new Enemy(getContext(),2,x,y);
         allEnemys.add(enemy);
     }
 
-    private void addAmmo(Enemy enemy,int angle){
-        int x = enemy.getX();
-        int y = enemy.getY();
-        if(enemy.getType()==2){
-           ;
-        }else if(enemy.getType()==1){
-            Ammo ammo = new Ammo(getContext(),2,0,20,x,y,hero.getX(),hero.getY(),enemy.getBitmap(),angle);
-            allAmmos.add(ammo);
-        }
+    private void addAmmo(Enemy enemy,int type,int angle,int movX,int movY){
+        int x = enemy.getX()+movX;
+        int y = enemy.getY()+movY;
+
+        Ammo ammo = new Ammo(getContext(),type,20,x,y,hero.getX(),hero.getY(),enemy.getBitmap(),hero.getBitmap(),angle);
+        allAmmos.add(ammo);
+
 
     }
 
@@ -210,6 +209,22 @@ public class GameLogic {
         //    hero.againButtonClick(getContext(),
         //            event);
         //}
-        hero.logic((int) event.getX(), (int) event.getY());
+        if(event.getAction()==MotionEvent.ACTION_DOWN)
+        {
+            if(event.getX()>hero.getX()&&event.getX()<hero.getX()+hero.getBitmap().getWidth()&&event.getY()>hero.getY()&&event.getY()<hero.getY()+hero.getBitmap().getHeight())
+            {
+                hero.logic((int) event.getX(), (int) event.getY());
+                isPressed=true;
+            }
+        }
+        else if(event.getAction()==MotionEvent.ACTION_MOVE&&isPressed)
+        {
+            hero.logic((int) event.getX(), (int) event.getY());
+        }
+        else if(event.getAction()==MotionEvent.ACTION_UP)
+        {
+            isPressed=false;
+        }
+
     }
 }

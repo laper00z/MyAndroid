@@ -16,32 +16,56 @@ public class Ammo {
     private int speed;
     private int x;
     private int y;
-    private double dir;
     private Bitmap bitmap;
     private Context mContext;
     private int angle;//子弹运行角度
     private boolean tag;
-    public Ammo(Context context, int type, double dir,int speed, int x, int y, int HeroX, int HeroY,Bitmap Dir,int angle){
+    private int temp = 0;
+    public Ammo(Context context, int type,int speed, int x, int y, int HeroX, int HeroY,Bitmap enemyBitmap,Bitmap heroBitmap,int angle){
         mContext = context;
         this.type = type;
         this.speed = speed;
-        this.x = x;
-        this.y = y;
-        this.angle=angle;
-        if(type==2) {
-            this.dir = (HeroY - y) / (HeroX - x);
+        if(this.type==1) {
+            this.angle=angle;
             bitmap = BitmapFactory.decodeResource(
                     context.getResources(),
                     R.drawable.ammo1);
         }
         else {
-            this.dir = dir;
             bitmap = BitmapFactory.decodeResource(
                     context.getResources(),
                     R.drawable.ammo2);
+            int ammoBitmapX = x+enemyBitmap.getWidth()/2-bitmap.getWidth()/2;
+            int ammoBitmapY = y+enemyBitmap.getHeight()/2-bitmap.getHeight()/2;
+            int ammoPotX = GetXY.PotX(bitmap,ammoBitmapX);
+            int ammoPotY = GetXY.PotY(bitmap,ammoBitmapY);
+            int heroBitmapX = HeroX;
+            int heroBitmapY = HeroY;
+            int heroPotX = GetXY.PotX(heroBitmap,heroBitmapX);
+            int heroPotY = GetXY.PotY(heroBitmap,heroBitmapY);
+            if(heroPotX - ammoPotX == 0&&heroPotY - ammoPotY>0) {
+                this.angle = 90;
+            }
+            else if(heroPotX - ammoPotX == 0&&heroPotY - ammoPotY<0){
+                this.angle = 270;
+            }
+            else {
+                if(heroPotX - ammoPotX > 0&&heroPotY - ammoPotY > 0)
+                    this.angle = (int) (Math.atan(((double)(heroPotY - ammoPotY)
+                            / (double)(heroPotX - ammoPotX))) * 180 / 3.1415926);
+                else if(heroPotX - ammoPotX < 0&&heroPotY - ammoPotY > 0)
+                    this.angle = 180+(int) (Math.atan(((double)(heroPotY - ammoPotY)
+                            / (double)(heroPotX - ammoPotX))) * 180 / 3.1415926);
+                else if(heroPotX - ammoPotX < 0&&heroPotY - ammoPotY <= 0)
+                    this.angle = 180+(int) (Math.atan(((double)(heroPotY - ammoPotY)
+                            / (double)(heroPotX - ammoPotX))) * 180 / 3.1415926);
+                else if(heroPotX - ammoPotX > 0&&heroPotY - ammoPotY <= 0)
+                    this.angle = 360+(int) (Math.atan(((double)(heroPotY - ammoPotY)
+                            / (double)(heroPotX - ammoPotX))) * 180 / 3.1415926);
+            }
         }
-       this.x=x+Dir.getWidth()/2-bitmap.getWidth()/2;
-       this.y=y+Dir.getHeight()/2;
+       this.x=x+enemyBitmap.getWidth()/2-bitmap.getWidth()/2;
+       this.y=y+enemyBitmap.getHeight()/2-bitmap.getHeight()/2;
        tag=true;
     }
 
@@ -50,7 +74,18 @@ public class Ammo {
     }
 
     public void logic(){
-
+        if(this.angle==0){
+            x+=speed;
+        }else if(this.angle==90){
+            y+=speed;
+        }else if(this.angle==180){
+            x-=speed;
+        }else if(this.angle==270){
+            y-=speed;
+        }else {
+            x+=speed*Math.cos(angle*3.1415926/180);
+            y+=speed*Math.sin(angle*3.1415926/180);
+        }
         /*
         圆形弹幕
          */
@@ -73,7 +108,7 @@ public class Ammo {
         x=(int)(x+(speed)*Math.cos(t));
         y=(int)(y+(speed)*Math.sin(t));
         */
-
+        /*
         //星形线
         if(tag)
         {
@@ -82,7 +117,7 @@ public class Ammo {
             tag=false;
         }
         y+=speed;
-
+        */
     }
 
     public boolean isDead(){

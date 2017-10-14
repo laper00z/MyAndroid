@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(new GameView(this,1,2));
+        setContentView(new GameView(this,1,1));
         Intent intent=getIntent();
         name=intent.getStringExtra("user_name");
         //setContentView(R.layout.activity_main);
